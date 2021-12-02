@@ -6,7 +6,7 @@
 #include <map>
 #include <cmath>
 #include <algorithm>
-
+#define DISABLE_GREEDY
 
 typedef enum
 {
@@ -324,6 +324,7 @@ template<typename GRID> bool Searcher<GRID>::find_path_finish(PathVector& path)
 	return true;
 }
 
+#ifndef DISABLE_GREEDY
 //点与终点是否有障碍
 template<typename GRID> bool Searcher<GRID>::find_path_greedy(Node *node)
 {
@@ -394,4 +395,6 @@ template<typename GRID> bool Searcher<GRID>::find_path_greedy(Node *node)
 		
 	return true;
 }
+#endif
+
 #endif

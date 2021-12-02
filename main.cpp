@@ -26,9 +26,9 @@ int main(int argc, const char * argv[]) {
     {
         {1,1,1,1,0,1,1,1,1,1},
         {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,1,0,0,0,0,0,1},
+        {1,0,0,0,1,0,0,0,0,1},
+        {1,0,0,0,1,0,0,0,0,1},
         {1,0,0,0,0,0,0,0,0,1},
         {1,0,0,0,0,0,0,0,0,1},
         {1,0,0,0,0,0,0,0,0,1},
@@ -56,7 +56,7 @@ int main(int argc, const char * argv[]) {
     //开始寻路
     PathVector path;
     Point start(2,2);
-    Point end(9,9);
+    Point end(6,6);
     Searcher<GridMapData> searcher(gridMap);
     searcher.find_path(path, start, end);
 
@@ -64,7 +64,7 @@ int main(int argc, const char * argv[]) {
     for (PathVector::iterator it = path.begin(); it != path.end(); ++it)
     {
         cout<< "x:" << it->x << "y:" << it->y <<endl;
-        mapdata[it->x][it->y] = '*';
+        mapdata[it->x][it->y] = 5;
     }
     cout<<"---打印路径---"<<endl;
     printMap(mapdata, MAX_X, MAX_Y);
