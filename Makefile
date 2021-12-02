@@ -6,7 +6,7 @@ INCLUDE_PATH ?= -I$(LUA_PATH)
 all:main
 
 main:
-	g++ -g Astar.cpp main.cpp -o main
+	g++ -g MapUtil.cpp main.cpp -o main
 
 clean:
 	-rm -rf *.o *.so
