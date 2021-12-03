@@ -39,15 +39,28 @@ int main(int argc, const char * argv[]) {
     printMap(mapdata, MAX_X, MAX_Y);
 
     int **p = (int**)malloc(sizeof(*p)*(MAX_X));
-    for (int i = 0; i<MAX_X; ++i)
-    {
-        int a[MAX_Y];
-        p[i] = a;
-        for (int j = 0; j<MAX_Y; ++j)
-        {
-            p[i][j] = mapdata[i][j];
-        }
-    }
+    if (p == NULL)
+	{
+		cout << "malloc failed!\n" << endl;
+		return -1;
+	}
+    for (int i = 0; i < MAX_X; i++)
+	{
+		p[i] = (int *)malloc(MAX_Y * sizeof(int));
+		if (p[i] == NULL)
+		{
+			cout << "malloc failed!\n" << endl;
+			return -1;
+		}
+	}
+
+	for (int i = 0; i < MAX_X; ++i)
+	{
+		for (int j = 0; j < MAX_Y; ++j)
+		{
+			p[i][j] = mapdata[i][j];
+		}
+	}
 
     //创建地图
     GridMapData gridMap = GridMapData(1001);

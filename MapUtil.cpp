@@ -1,5 +1,6 @@
 #include "MapUtil.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 bool GridMapData::operator()(const int &x, const int &y)const
 {
@@ -19,8 +20,8 @@ bool GridMapData::init(int **array, int _w, int _h)
     mapData = (GridData**)malloc(sizeof(*mapData)*w);
     for (int i = 0; i<w; ++i)
     {
-        GridData *yGrid = new GridData[h];
-        mapData[i] = yGrid;
+        GridData *hGrid = new GridData[h];
+        mapData[i] = hGrid;
     }
 
     for (int i = 0; i<w; ++i)

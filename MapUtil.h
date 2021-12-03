@@ -20,7 +20,7 @@ public:
 
 class GridMapData {
 public:
-    GridMapData(int _mapId):mapId(_mapId){}
+    GridMapData(int _mapId):mapId(_mapId){ blockType = 0;}
 
     int blockType;//格挡类型。
 

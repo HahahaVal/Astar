@@ -6,7 +6,8 @@
 #include <map>
 #include <cmath>
 #include <algorithm>
-#define DISABLE_GREEDY
+#include <stdio.h>
+// #define DISABLE_GREEDY
 
 typedef enum
 {
@@ -149,9 +150,6 @@ private:
 
 
 
-
-//////////////////////////////////////////
-
 static const Point npos = Point();
 
 template <typename GRID> Result Searcher<GRID>::find_path_init(Point start, Point end)
@@ -171,8 +169,8 @@ template <typename GRID> Result Searcher<GRID>::find_path_init(Point start, Poin
         return NO_PATH;
     }
 
+    start_node = new Node(start);
     end_node = new Node(end);
-	start_node = new Node(start);
 
 #ifndef DISABLE_GREEDY
 	if(find_path_greedy(start_node))
@@ -260,38 +258,30 @@ template <typename GRID> void Searcher<GRID>::confirm_follow(const Node *node)
 }
 
 
-template <typename GRID> int Searcher<GRID>::find_neighbors(const Node *node, Point *ptr)
+template <typename GRID> int Searcher<GRID>::find_neighbors(const Node *node, Point *wptr)
 {
-    Point *wptr = ptr;
+    Point *w = wptr;
     int x = node->pos.x;
     int y = node->pos.y;
     //四个方向
     if(grid(x+1,y))
     {
-        Point point(x+1, y);
-        wptr++;
-        wptr = &point;
+        *w++ = Point(x+1, y);
     }
     if(grid(x-1,y))
     {
-        Point point(x-1, y);
-        wptr++;
-        wptr = &point;
+        *w++ = Point(x-1, y);
     }
     if(grid(x,y+1))
     {
-        Point point(x, y+1);
-        wptr++;
-        wptr = &point;
+        *w++ = Point(x, y+1);
     }
     if(grid(x,y-1))
     {
-        Point point(x, y-1);
-        wptr++;
-        wptr = &point;
+        *w++ = Point(x, y-1);
     }
 
-    return int(wptr - ptr);
+    return int(w - wptr);
 }
 
 template<typename GRID> bool Searcher<GRID>::find_path_finish(PathVector& path)
@@ -334,7 +324,7 @@ template<typename GRID> bool Searcher<GRID>::find_path_greedy(Node *node)
     int ex = end_node->pos.x;
     int ey = end_node->pos.y;
 
-    if ( x==ex && y==ey)
+    if ( x==ex && y==ey )
     {
         return false;
     }
@@ -372,7 +362,7 @@ template<typename GRID> bool Searcher<GRID>::find_path_greedy(Node *node)
     //此时至少有一个轴是对齐的
     if(!(x==ex && y==ey))
     {
-        while(x!=ex)
+        while(x != ex)
             if(!grid(x += dx, y))
                 return false;
 
