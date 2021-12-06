@@ -26,7 +26,7 @@ public:
 
     bool operator()(const int &x,const int &y)const;
     bool init(int **array, int w, int h);
-    ~GridMapData() {};
+    ~GridMapData();
 
 private:
     int mapId;

@@ -81,5 +81,21 @@ int main(int argc, const char * argv[]) {
     }
     cout<<"---打印路径---"<<endl;
     printMap(mapdata, MAX_X, MAX_Y);
+
+    //释放内存
+
+	for (int i = 0; i < MAX_X; ++i)
+	{
+		if(p[i] != NULL)
+        {
+            free(p[i]);
+            p[i] = NULL;
+        }
+	}
+    if (p != NULL)
+	{
+		free(p);
+		p = NULL;
+	}
     return 0;
 }

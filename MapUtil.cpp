@@ -33,3 +33,15 @@ bool GridMapData::init(int **array, int _w, int _h)
         }
     }
 }
+
+GridMapData::~GridMapData(){
+    if(mapData){
+        for (int i = 0; i<w; ++i) {
+            GridData *yGrids = mapData[i];
+            if(yGrids){
+                delete[] yGrids;
+            }
+        }
+        free(mapData);
+    }   
+}
