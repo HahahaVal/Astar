@@ -7,6 +7,7 @@
 #include <cmath>
 #include <algorithm>
 #include <stdio.h>
+
 // #define DISABLE_GREEDY
 
 typedef enum
@@ -27,7 +28,10 @@ enum Result
 class Point
 {
 public:
+    int x, y;
+
     Point(int _x=-1, int _y=-1) : x(_x),y(_y) {}
+
     inline bool operator==(const Point point) const
     {
         return x == point.x && y == point.y;
@@ -36,7 +40,11 @@ public:
     {
         return x != point.x || y != point.y;
     }
-    int x, y;
+    inline bool operator<(const Point& p) const
+	{
+		return y < p.y || (y == p.y && x < p.x);
+	}
+
     inline bool is_valid() const { return (x != -1)&&(y != -1); }
 };
 
@@ -120,7 +128,7 @@ private:
 
 
 typedef std::vector<Point> PathVector;
-
+typedef std::map<Point, Node> NodeGrid;
 
 template <typename GRID> class Searcher
 {
@@ -138,6 +146,9 @@ private:
     Node *start_node;
     Node *end_node;
     OpenList open_list;            //待处理的节点
+    NodeGrid nodegrid;
+
+    Node *get_node(const Point& pos);
 
     void confirm_follow(const Node *node);
     int find_neighbors(const Node *node, Point *wptr);
@@ -152,8 +163,17 @@ private:
 
 static const Point npos = Point();
 
+template <typename GRID> inline Node *Searcher<GRID>::get_node(const Point& pos)
+{
+	return &nodegrid.insert(std::make_pair(pos, Node(pos))).first->second;
+}
+
 template <typename GRID> Result Searcher<GRID>::find_path_init(Point start, Point end)
 {
+    for(NodeGrid::iterator it = nodegrid.begin(); it != nodegrid.end(); ++it)
+    {
+        it->second.clear_state();
+    }
     open_list.clear();
 
     start_node = NULL;
@@ -169,8 +189,8 @@ template <typename GRID> Result Searcher<GRID>::find_path_init(Point start, Poin
         return NO_PATH;
     }
 
-    start_node = new Node(start);
-    end_node = new Node(end);
+    start_node = get_node(start);
+    end_node = get_node(end);
 
 #ifndef DISABLE_GREEDY
 	if(find_path_greedy(start_node))
@@ -230,8 +250,7 @@ template <typename GRID> void Searcher<GRID>::confirm_follow(const Node *node)
     for(int i = num-1; i >= 0; --i)
 	{
         Point neighbor_point = buff[i];
-
-        Node *neighbor_node = new Node(neighbor_point);
+        Node *neighbor_node = get_node(neighbor_point);
         if (!neighbor_node->is_closed())
         {
             int dg = euclidean(neighbor_node, node);
@@ -373,7 +392,7 @@ template<typename GRID> bool Searcher<GRID>::find_path_greedy(Node *node)
 
 	if(mid_pos.is_valid())
 	{
-        Node *mid = new Node(mid_pos);
+        Node *mid = get_node(mid_pos);
 		mid->parent = node;
 		if(mid != end_node)
 			end_node->parent = mid;

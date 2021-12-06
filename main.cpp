@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]) {
     cout<<"---打印寻路点---"<<endl;
     for (PathVector::iterator it = path.begin(); it != path.end(); ++it)
     {
-        cout<< "x:" << it->x << "y:" << it->y <<endl;
+        cout<< "x:" << it->x  << "  " << "y:" << it->y <<endl;
         mapdata[it->x][it->y] = 5;
     }
     cout<<"---打印路径---"<<endl;
