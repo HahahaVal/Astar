@@ -34,8 +34,7 @@ local function printMap()
     print(ret)
 end
 
-print("初始地图---------------")
-printMap()
+
 
 local function loadMapDataPath(mapId)
     return map[mapId]
@@ -44,17 +43,31 @@ end
 AstarCore.RegLoadMapFunc(loadMapDataPath)
 
 local gridData = AstarCore.Create(mapId)
-if gridData then
-    AstarCore.SetGripGripMark(gridData,2,3,1)
-    local ret , pathList = AstarCore.FindPath(gridData,2,2,5,5)
-    if ret > 0 then
-        for _, point in pairs(pathList) do
-            map[mapId][point.x][point.y].p = "*"
-        end
+
+for i=10, 1, -1 do
+    local randomx = math.random(1,17)
+    local randomy = math.random(1,17)
+    map[mapId][randomx][randomy].p = 1
+    AstarCore.SetGripGripMark(gridData,randomx,randomy,1)
+end
+
+print("初始地图---------------")
+printMap()
+
+local randomx = math.random(1,17)
+local randomy = math.random(1,17)
+print("寻路终点为：",randomx,randomy)
+
+local ret , pathList = AstarCore.FindPath(gridData,2,2,randomx,randomy)
+if ret > 0 then
+    for _, point in pairs(pathList) do
+        map[mapId][point.x][point.y].p = "*"
     end
 end
+print("寻路后地图---------------")
+printMap()
+
 collectgarbage("collect")
 AstarCore.UnloadGripMap(mapId)
 
-print("寻路后地图---------------")
-printMap()
+
