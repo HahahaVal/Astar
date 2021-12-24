@@ -1,4 +1,4 @@
-local Astar = require "Astar.Core"
+local AstarCore = require "AstarCore"
 
 local map = {}
 
@@ -41,18 +41,20 @@ local function loadMapDataPath(mapId)
     return map[mapId]
 end
 
-Astar.RegLoadMapFunc(loadMapDataPath)
+AstarCore.RegLoadMapFunc(loadMapDataPath)
 
-local gridData = Astar.Create(mapId)
+local gridData = AstarCore.Create(mapId)
 if gridData then
-    local ret , pathList = Astar.FindPath(gridData,2,2,5,5)
+    AstarCore.SetGripGripMark(gridData,2,3,1)
+    local ret , pathList = AstarCore.FindPath(gridData,2,2,5,5)
     if ret > 0 then
         for _, point in pairs(pathList) do
             map[mapId][point.x][point.y].p = "*"
         end
     end
 end
-Astar.UnloadGripMap(mapId)
+collectgarbage("collect")
+AstarCore.UnloadGripMap(mapId)
 
 print("寻路后地图---------------")
 printMap()

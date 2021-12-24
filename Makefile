@@ -7,7 +7,7 @@ CFLAGS ?= -g -O2 -Wall -fPIC -shared -std=c++11
 all:main
 
 main:
-	g++ $(CFLAGS) $(INCLUDE_PATH) MapUtil.cpp lMapUtil.cpp -o Astar.so
+	g++ $(CFLAGS) $(INCLUDE_PATH) MapUtil.cpp lMapUtil.cpp -o AstarCore.so
 
 clean:
 	-rm -rf *.o *.so

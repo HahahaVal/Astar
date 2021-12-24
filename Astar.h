@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <stdio.h>
 
-// #define DISABLE_GREEDY
+#define DISABLE_GREEDY
 
 typedef enum
 {

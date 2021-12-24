@@ -3,7 +3,7 @@
 #include <assert.h>
 
 extern "C" {
-    int luaopen_Astar_Core(struct lua_State *L);
+    int luaopen_AstarCore(struct lua_State *L);
 }
 
 #define IS_ORIGINAL_MAP_DATA(udGripMap) (udGripMap->mapData == udGripMap->mapDataReal)
@@ -32,6 +32,7 @@ static int lgcUDMap(lua_State *L)
         assert(udGripMap->mapDataReal->mapData != udGripMap->mapData->mapData);
         delete udGripMap->mapDataReal;
         udGripMap->mapDataReal = nullptr;
+        printf("udGripMap gc\n");
     }
     return 0;
 }
@@ -129,7 +130,7 @@ static int lfindPath(lua_State *L)
     return 2;
 }
 
-int luaopen_Astar_Core(lua_State *L) {
+int luaopen_AstarCore(lua_State *L) {
     luaL_checkversion(L);
     
     luaL_Reg l[] = {
