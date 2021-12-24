@@ -52,7 +52,7 @@ public:
 class Node
 {
 public:
-    Node(const Point& p) : f(0),g(0),parent(NULL),flag(UNKNOWN),pos(p) {}
+    Node(const Point& p) : g(0),f(0),pos(p),parent(NULL),flag(UNKNOWN) {}
 
     int g;  //当前点到起点的真实距离,前一个节点的g值加上两节点之间的距离
     int f;  //路径评分  f = g+h , h = 当前节点到终点的“估算距离
