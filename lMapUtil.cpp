@@ -6,7 +6,7 @@ extern "C" {
     int luaopen_AstarCore(struct lua_State *L);
 }
 
-#define IS_ORIGINAL_MAP_DATA(udGripMap) (udGripMap->mapData == udGripMap->mapDataReal)
+#define IS_ORIGINAL_MAP_DATA(udGripMap) (udGripMap->mapDataSrc == udGripMap->mapDataCopy)
 #define GET_UD_PTR(i) struct UD_GripMap *udGripMap = (struct UD_GripMap *)lua_touserdata(L, i);assert(udGripMap);
 
 //Aster.RegLoadMapFunc(func)
@@ -29,9 +29,9 @@ static int lgcUDMap(lua_State *L)
 {
     GET_UD_PTR(1);
     if(!IS_ORIGINAL_MAP_DATA(udGripMap)){
-        assert(udGripMap->mapDataReal->mapData != udGripMap->mapData->mapData);
-        delete udGripMap->mapDataReal;
-        udGripMap->mapDataReal = nullptr;
+        assert(udGripMap->mapDataCopy->mapData != udGripMap->mapDataSrc->mapData);
+        delete udGripMap->mapDataCopy;
+        udGripMap->mapDataCopy = nullptr;
         printf("udGripMap gc\n");
     }
     return 0;
@@ -47,8 +47,8 @@ static int lcreate(lua_State *L)
         return 0;
     }
     struct UD_GripMap *udGripMap = (struct UD_GripMap*)lua_newuserdata(L, sizeof(struct UD_GripMap));
-    udGripMap->mapData = mapData;
-    udGripMap->mapDataReal =mapData;
+    udGripMap->mapDataSrc = mapData;
+    udGripMap->mapDataCopy = mapData;
     if (luaL_newmetatable(L, "UD_GripMap_mt"))
     {
         lua_pushcfunction(L, lgcUDMap);
@@ -64,8 +64,8 @@ static int lsetGripMark(lua_State *L)
     GET_UD_PTR(1);
     unsigned int x = luaL_checkinteger(L, 2);
     unsigned int y = luaL_checkinteger(L, 3);
-    struct GridMapData *mapDataReal = udGripMap->mapDataReal;
-    mapDataReal->checkPos(L, x, y);
+    struct GridMapData *mapDataCopy = udGripMap->mapDataCopy;
+    mapDataCopy->checkPos(L, x, y);
 
     unsigned char mark = luaL_checkinteger(L, 4);
     if (mark > 255)
@@ -74,11 +74,11 @@ static int lsetGripMark(lua_State *L)
     }
     if (IS_ORIGINAL_MAP_DATA(udGripMap))
     {
-        struct GridMapData *newMapData = new GridMapData(*udGripMap->mapData);
-        copyGridMapData(newMapData, udGripMap->mapData);
-        udGripMap->mapDataReal = newMapData;
+        struct GridMapData *newMapData = new GridMapData(*udGripMap->mapDataSrc);
+        copyGridMapData(newMapData, udGripMap->mapDataSrc);
+        udGripMap->mapDataCopy = newMapData;
     }
-    udGripMap->mapDataReal->mapData[x][y].mark = mark;
+    udGripMap->mapDataCopy->mapData[x][y].mark = mark;
     return 0;
 }
 
@@ -90,11 +90,11 @@ static int lfindPath(lua_State *L)
     unsigned int fromY = luaL_checkinteger(L, 3);
     unsigned int toX = luaL_checkinteger(L, 4);
     unsigned int toY = luaL_checkinteger(L, 5);
-    struct GridMapData *mapDataReal = udGripMap->mapDataReal;
-    mapDataReal->checkPos(L, fromX, fromY);
-    mapDataReal->checkPos(L, toX, toY);
+    struct GridMapData *mapDataCopy = udGripMap->mapDataCopy;
+    mapDataCopy->checkPos(L, fromX, fromY);
+    mapDataCopy->checkPos(L, toX, toY);
 
-    int mark = mapDataReal->mapData[toX][toY].mark;
+    int mark = mapDataCopy->mapData[toX][toY].mark;
     if(mark == UNWALKABLE)
     {
         //目标点不可走
@@ -105,7 +105,7 @@ static int lfindPath(lua_State *L)
     PathVector path;
     Point start(fromX, fromY);
     Point end(toX, toY);
-    Searcher<GridMapData> searcher(*mapDataReal);
+    Searcher<GridMapData> searcher(*mapDataCopy);
     bool ret = searcher.find_path(path, start, end);
     if (!ret) 
     {   

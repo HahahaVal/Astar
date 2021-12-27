@@ -2,7 +2,6 @@
 #include <mutex>
 
 static std::mutex gLock;
-
 #define LOCK gLock.lock()
 #define UNLOCK gLock.unlock()
 
@@ -10,7 +9,8 @@ typedef std::map<int,GridMapData*> GridMapDataDict;
 static GridMapDataDict G_GRID_MAP_DICT;
 const char *LUA_LOAD_FUNC = "LUA_LOAD_FUNC";
 
-GridMapData *getGridMapData(lua_State *L, int mapId){
+GridMapData *getGridMapData(lua_State *L, int mapId)
+{
     GridMapData *data = nullptr;
     LOCK;
     GridMapDataDict::const_iterator it = G_GRID_MAP_DICT.find(mapId);
@@ -61,13 +61,15 @@ void unloadGripMap(int mapId)
 
 void copyGridMapData(GridMapData *newMapData, GridMapData *oldMapData)
 {
-    newMapData->mapData = (GridData**)MALLOC(sizeof(*newMapData->mapData) * newMapData->memw);
-    for (unsigned int x=0; x<newMapData->memw; ++x)
+    unsigned int memw = newMapData->memw;
+    unsigned int memh = newMapData->memh;
+    newMapData->mapData = (GridData**)MALLOC(sizeof(*newMapData->mapData) * memw);
+    for (unsigned int x=0; x<memw; ++x)
     {
-        GridData *yGrid = new GridData[newMapData->memh];
+        GridData *yGrid = new GridData[memh];
         newMapData->mapData[x] = yGrid;
         GridData *orginal = oldMapData->mapData[x];
-        for(unsigned int y = 0; y < newMapData->memh; ++y){
+        for(unsigned int y = 0; y < memh; ++y){
             yGrid[y] = orginal[y];
         }
     }

@@ -3,19 +3,18 @@
 #include <stdio.h>
 #include "Astar.h"
 
-#define MALLOC malloc
-#define FREE free
-
 extern "C" {
 	#include "lua.h"
 	#include "lualib.h"
 	#include "lauxlib.h"
 }
+#define MALLOC malloc
+#define FREE free
 
 enum MarkType
 {
     WALKABLE = 0,
-    UNWALKABLE =  1,
+    UNWALKABLE = 1,
 };
 
 enum class FindPathRet {
@@ -49,8 +48,8 @@ private:
 };
 
 struct UD_GripMap{
-    struct GridMapData *mapData;//地图原始数据
-    struct GridMapData *mapDataReal;//地图数据副本
+    struct GridMapData *mapDataSrc;//地图原始数据
+    struct GridMapData *mapDataCopy;//地图数据副本
 };
 
 GridMapData *getGridMapData(lua_State *L, int mapId);
