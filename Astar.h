@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #define DISABLE_GREEDY
+// #define EIGHT_DIRECTION
 
 typedef enum
 {
@@ -245,7 +246,11 @@ template <typename GRID> Result Searcher<GRID>::find_path_step()
 
 template <typename GRID> void Searcher<GRID>::confirm_follow(const Node *node)
 {
-    Point buff[4];
+    #ifdef EIGHT_DIRECTION
+        Point buff[8];
+    #else
+        Point buff[4];
+    #endif
     int num = find_neighbors(node, &buff[0]);
     for(int i = num-1; i >= 0; --i)
 	{
@@ -282,7 +287,6 @@ template <typename GRID> int Searcher<GRID>::find_neighbors(const Node *node, Po
     Point *w = wptr;
     int x = node->pos.x;
     int y = node->pos.y;
-    //四个方向
     if(grid(x+1,y))
     {
         *w++ = Point(x+1, y);
@@ -299,7 +303,25 @@ template <typename GRID> int Searcher<GRID>::find_neighbors(const Node *node, Po
     {
         *w++ = Point(x, y-1);
     }
-
+    #ifdef EIGHT_DIRECTION
+    if(grid(x+1,y) || grid(x,y+1))
+    {
+        *w++ = Point(x+1, y+1);
+    }
+    if(grid(x-1,y) || grid(x,y+1))
+    {
+        *w++ = Point(x-1, y+1);
+    }
+    if(grid(x+1,y) || grid(x,y-1))
+    {
+        *w++ = Point(x+1, y-1);
+    }
+    if(grid(x-1,y) || grid(x,y-1))
+    {
+        *w++ = Point(x-1, y-1);
+    }
+    #endif
+    
     return int(w - wptr);
 }
 
