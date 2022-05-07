@@ -31,16 +31,19 @@ struct GridData {
 
 class GridMapData {
 public:
-    GridMapData(int _mapId):w(0),h(0),memw(0),memh(0),mapData(nullptr),mapId(_mapId) {}
+    GridMapData(int _mapId):w(0),h(0),memw(0),memh(0),gridH(10),gridW(10),mapData(nullptr),mapId(_mapId) {}
 
     bool operator()(const int &x,const int &y)const;
     bool init(lua_State *L);
     
     void checkPos(lua_State *L, int x, int y);
-    
+    bool hasBarrier(int fromX, int fromY, int toX, int toY);
+    inline int getLineRelation(float k, float b, int gridX, int gridY);
+
     unsigned int w, h;
     unsigned int memw, memh;
 
+    unsigned int gridW, gridH;
     GridData **mapData;
     ~GridMapData();
 private:

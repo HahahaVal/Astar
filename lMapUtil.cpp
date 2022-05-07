@@ -130,6 +130,23 @@ static int lfindPath(lua_State *L)
     return 2;
 }
 
+//Astar.HasBarrier(gridData,fromX,fromY,toX,toY)
+static int lhasBarrier(lua_State *L)
+{
+    GET_UD_PTR(1);
+    unsigned int fromX = luaL_checkinteger(L, 2);
+    unsigned int fromY = luaL_checkinteger(L, 3);
+    unsigned int toX = luaL_checkinteger(L, 4);
+    unsigned int toY = luaL_checkinteger(L, 5);
+    struct GridMapData *mapDataCopy = udGripMap->mapDataCopy;
+    mapDataCopy->checkPos(L, fromX, fromY);
+    mapDataCopy->checkPos(L, toX, toY);
+
+    bool rlt = mapDataCopy->hasBarrier(fromX, fromY, toX, toY);
+    lua_pushboolean(L, rlt);
+    return 1;
+}
+
 int luaopen_AstarCore(lua_State *L) {
     luaL_checkversion(L);
     
@@ -140,6 +157,7 @@ int luaopen_AstarCore(lua_State *L) {
         {"Create",lcreate},
         {"SetGripGripMark",lsetGripMark},
         {"FindPath", lfindPath},
+        {"HasBarrier", lhasBarrier},
         {NULL,NULL},
     };
     
